@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAPITEL SPA — Arquitectura, Ingeniería y Construcción</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #1A1A1A;
+            --bg-darker: #0F0F0F;
+            --bg-card: #252525;
+            --text-light: #F5F5F5;
+            --text-gray: #B0B0B0;
+            --steel-blue: #5B8CC4;
+            --steel-blue-dark: #3A5F8F;
+            --terracotta: #D97A5E;
+            --terracotta-dark: #B85A43;
+            --border-light: rgba(91, 140, 196, 0.3);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* LOGO CAROUSEL STICKY */
+        .logo-carousel-sticky {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 15, 15, 0.98);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(217, 122, 94, 0.3);
+        }
+        
+        .logo-track {
+            display: flex;
+            animation: scrollLogos 30s linear infinite;
+            gap: 3rem;
+        }
+        
+        .logo-track img {
+            height: 50px;
+            width: auto;
+            object-fit: contain;
+            filter: brightness(0.9);
+            transition: filter 0.3s ease;
+        }
+        
+        .logo-track img:hover {
+            filter: brightness(1.2);
+        }
+        
+        @keyframes scrollLogos {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        
+        /* HERO SECTION */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 8rem 2rem 2rem;
+            background: linear-gradient(135deg, #0F0F0F 0%, #1A1A1A 50%, #252525 100%);
+            margin-top: 60px;
+        }
+        
+        .logo-container {
+            max-width: 400px;
+            width: 100%;
+            margin-bottom: 3rem;
+            opacity: 0;
+            animation: fadeInUp 1.2s ease-out forwards;
+        }
+        
+        .logo-container img {
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(0 10px 30px rgba(91, 140, 196, 0.5));
+        }
+        
+        .hero-text {
+            text-align: center;
+            opacity: 0;
+            animation: fadeInUp 1.2s ease-out 0.3s forwards;
+        }
+        
+        .hero-text h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            color: var(--steel-blue);
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+            text-shadow: 0 2px 10px rgba(91, 140, 196, 0.3);
+        }
+        
+        .hero-text .tagline {
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            font-weight: 400;
+            color: var(--terracotta);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+        
+        .scroll-indicator {
+            position: absolute;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            animation: fadeInUp 1.2s ease-out 0.6s forwards, bounce 2s ease-in-out 2s infinite;
+            color: var(--steel-blue);
+            font-size: 2rem;
+        }
+        
+        /* VIDEOS GRID 2x3 */
+        .videos-section {
+            padding: 6rem 2rem;
+            background: var(--bg-darker);
+        }
+        
+        .section-header {
+            max-width: 1200px;
+            margin: 0 auto 4rem;
+            text-align: center;
+        }
+        
+        .section-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            color: var(--steel-blue);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .section-header p {
+            font-size: 1.1rem;
+            color: var(--text-gray);
+            font-weight: 300;
+        }
+        
+        .videos-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        
+        .video-card {
+            overflow: hidden;
+            border-radius: 4px;
+            background: var(--bg-card);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            border: 1px solid rgba(91, 140, 196, 0.2);
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .video-card::after {
+            content: '▶';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            color: white;
+            background: rgba(91, 140, 196, 0.8);
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .video-card:hover::after {
+            opacity: 1;
+        }
+        
+        .video-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(91, 140, 196, 0.3);
+            border-color: var(--steel-blue);
+        }
+        
+        .video-card img {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .video-card iframe {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border: none;
+            display: block;
+        }
+        
+        /* EXPERTISE GRID */
+        .expertise-section {
+            padding: 6rem 2rem;
+            background: var(--bg-dark);
+        }
+        
+        .expertise-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+        }
+        
+        .expertise-item {
+            padding: 2rem;
+            background: var(--bg-card);
+            border-left: 3px solid var(--steel-blue);
+            transition: all 0.3s ease;
+            border-radius: 4px;
+        }
+        
+        .expertise-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 30px rgba(217, 122, 94, 0.3);
+            border-left-color: var(--terracotta);
+        }
+        
+        .expertise-item h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--steel-blue);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .expertise-item p {
+            font-size: 1rem;
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+        
+        /* GALLERY CAROUSEL */
+        .gallery-section {
+            padding: 6rem 0;
+            background: var(--bg-darker);
+            overflow: hidden;
+        }
+        
+        .gallery-carousel {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            margin-top: 3rem;
+        }
+        
+        .gallery-track {
+            display: flex;
+            gap: 2rem;
+            animation: scrollGallery 40s linear infinite;
+        }
+        
+        @keyframes scrollGallery {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        
+        .gallery-track:hover {
+            animation-play-state: paused;
+        }
+        
+        .gallery-grid {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .gallery-thumb {
+            position: relative;
+            overflow: hidden;
+            border-radius: 4px;
+            cursor: pointer;
+            flex: 0 0 300px;
+            height: 300px;
+            background: var(--bg-card);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .gallery-thumb:hover {
+            transform: scale(1.05);
+            border-color: var(--steel-blue);
+            box-shadow: 0 10px 30px rgba(91, 140, 196, 0.4);
+        }
+        
+        .gallery-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+        
+        .gallery-thumb:hover img {
+            transform: scale(1.15);
+        }
+        
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            padding: 1rem;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-thumb:hover .gallery-overlay {
+            transform: translateY(0);
+        }
+        
+        .gallery-overlay p {
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        /* LIGHTBOX MODAL */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.92);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .lightbox.active {
+            display: flex;
+        }
+        
+        .lightbox-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            background: var(--bg-card);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid var(--steel-blue);
+        }
+        
+        .lightbox-content img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .lightbox-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--terracotta);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .lightbox-close:hover {
+            background: var(--terracotta-dark);
+            transform: rotate(90deg);
+        }
+        
+        /* FEATURED PROJECT */
+        .featured-section {
+            padding: 6rem 2rem;
+            background: var(--bg-dark);
+        }
+        
+        .featured-project {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        
+        .featured-image {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 20px 60px rgba(91, 140, 196, 0.3);
+            border: 2px solid var(--steel-blue);
+        }
+        
+        .featured-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.6s ease;
+        }
+        
+        .featured-image:hover img {
+            transform: scale(1.05);
+        }
+        
+        .featured-content h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            color: var(--steel-blue);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .featured-video {
+            width: 100%;
+            max-width: 400px;
+            margin: 2rem 0;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(91, 140, 196, 0.3);
+            border: 2px solid var(--steel-blue);
+        }
+        
+        .featured-video iframe {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border: none;
+            display: block;
+        }
+        
+        .featured-content p {
+            font-size: 1.1rem;
+            color: var(--text-gray);
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+        
+        .project-meta {
+            display: flex;
+            gap: 2rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-light);
+        }
+        
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .meta-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--terracotta);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .meta-value {
+            font-size: 1rem;
+            color: var(--text-light);
+            font-weight: 400;
+        }
+        
+        /* CONTACT SECTION WITH FORM */
+        .contact-section {
+            padding: 6rem 2rem;
+            background: linear-gradient(135deg, var(--steel-blue-dark) 0%, var(--steel-blue) 50%, var(--terracotta-dark) 100%);
+        }
+        
+        .contact-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .contact-content h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            color: white;
+            margin-bottom: 3rem;
+            font-weight: 600;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .contact-form {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 3rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .form-group {
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+        
+        .form-group label {
+            display: block;
+            color: white;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(90deg, rgba(217, 122, 94, 0.15) 0%, rgba(91, 140, 196, 0.15) 100%);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            color: white;
+            transition: all 0.4s ease;
+            animation: pulseGlow 3s ease-in-out infinite;
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% {
+                box-shadow: 0 0 5px rgba(91, 140, 196, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 15px rgba(217, 122, 94, 0.3);
+            }
+        }
+        
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--terracotta);
+            background: linear-gradient(90deg, rgba(217, 122, 94, 0.25) 0%, rgba(91, 140, 196, 0.25) 100%);
+            animation: none;
+            box-shadow: 0 0 20px rgba(217, 122, 94, 0.4);
+        }
+        
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            background: var(--terracotta);
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        
+        .submit-btn:hover {
+            background: var(--terracotta-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(217, 122, 94, 0.4);
+        }
+        
+        .contact-email-link {
+            display: block;
+            margin-top: 2rem;
+            color: white;
+            font-size: 1.1rem;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+        
+        .contact-email-link:hover {
+            opacity: 1;
+        }
+        
+        /* FOOTER */
+        footer {
+            padding: 3rem 2rem;
+            background: var(--bg-darker);
+            color: var(--text-gray);
+            border-top: 1px solid rgba(91, 140, 196, 0.2);
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-logos {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .footer-logo {
+            max-height: 50px;
+            width: auto;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+        
+        .footer-logo:hover {
+            opacity: 1;
+        }
+        
+        .footer-text {
+            font-size: 0.9rem;
+            opacity: 0.6;
+        }
+        
+        /* ANIMATIONS */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            50% {
+                transform: translateX(-50%) translateY(10px);
+            }
+        }
+        
+        /* RESPONSIVE */
+        @media (max-width: 1200px) {
+            .videos-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .expertise-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .logo-carousel-sticky {
+                padding: 0.3rem 0;
+            }
+            
+            .logo-track img {
+                height: 35px;
+            }
+            
+            .hero {
+                padding: 6rem 1rem 2rem;
+                margin-top: 50px;
+            }
+            
+            .videos-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .expertise-wrapper {
+                padding: 0 2rem;
+            }
+            
+            .expertise-item {
+                flex: 0 0 280px;
+            }
+            
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .featured-project {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            
+            .featured-image {
+                order: -1;
+            }
+            
+            .contact-form {
+                padding: 2rem 1.5rem;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 2rem;
+                text-align: center;
+            }
+            
+            .footer-logos {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- STICKY LOGO CAROUSEL -->
+    <div class="logo-carousel-sticky">
+        <div class="logo-track">
+            <img src="2.png" alt="CAPITEL">
+            <img src="3.png" alt="CAPITEL">
+            <img src="4.png" alt="CAPITEL">
+            <img src="7.png" alt="CAPITEL">
+            <img src="10.png" alt="CAPITEL">
+            <img src="16.png" alt="CAPITEL">
+            <img src="Logo4.png" alt="CAPITEL">
+            <img src="2.png" alt="CAPITEL">
+            <img src="3.png" alt="CAPITEL">
+            <img src="4.png" alt="CAPITEL">
+            <img src="7.png" alt="CAPITEL">
+            <img src="10.png" alt="CAPITEL">
+            <img src="16.png" alt="CAPITEL">
+            <img src="Logo4.png" alt="CAPITEL">
+        </div>
+    </div>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="logo-container">
+            <img src="Logo3.png" alt="CAPITEL SPA">
+        </div>
+        
+        <div class="hero-text">
+            <h1>CAPITEL SPA</h1>
+            <p class="tagline">Arquitectura - Ingeniería - Construcción</p>
+        </div>
+        
+        <div class="scroll-indicator">↓</div>
+    </section>
+
+    <!-- VIDEOS GRID 2x3 -->
+    <section class="videos-section">
+        <div class="section-header">
+            <h2>Portfolio Visual</h2>
+            <p>Modelación 3D y desarrollo de proyectos</p>
+        </div>
+        
+        <div class="videos-grid">
+            <div class="video-card" onclick="openVideoLightbox('t5vdjMNMqjw')">
+                <img src="https://img.youtube.com/vi/t5vdjMNMqjw/maxresdefault.jpg" alt="Video 1">
+            </div>
+            
+            <div class="video-card" onclick="openVideoLightbox('C6CxZzg5y8s')">
+                <img src="https://img.youtube.com/vi/C6CxZzg5y8s/maxresdefault.jpg" alt="Video 2">
+            </div>
+            
+            <div class="video-card" onclick="openVideoLightbox('FgS3YRkSk4I')">
+                <img src="https://img.youtube.com/vi/FgS3YRkSk4I/maxresdefault.jpg" alt="Video 3">
+            </div>
+            
+            <div class="video-card" onclick="openVideoLightbox('0Fp9vDRa-Is')">
+                <img src="https://img.youtube.com/vi/0Fp9vDRa-Is/maxresdefault.jpg" alt="Video 4">
+            </div>
+            
+            <div class="video-card" onclick="openVideoLightbox('2CKEuXHv8og')">
+                <img src="https://img.youtube.com/vi/2CKEuXHv8og/maxresdefault.jpg" alt="Video 5">
+            </div>
+            
+            <div class="video-card" onclick="openVideoLightbox('BNUbtNkVjeg')">
+                <img src="https://img.youtube.com/vi/BNUbtNkVjeg/maxresdefault.jpg" alt="Video 6">
+            </div>
+        </div>
+    </section>
+
+    <!-- EXPERTISE GRID -->
+    <section class="expertise-section">
+        <div class="section-header">
+            <h2>Áreas de Especialización</h2>
+        </div>
+        
+        <div class="expertise-grid">
+            <div class="expertise-item">
+                <h3>Infraestructura Urbana</h3>
+                <p>Desarrollo de planes reguladores y proyectos municipales</p>
+            </div>
+            
+            <div class="expertise-item">
+                <h3>Arquitectura Clínica</h3>
+                <p>Centros de diálisis y establecimientos de salud especializados</p>
+            </div>
+            
+            <div class="expertise-item">
+                <h3>Retail & Comercial</h3>
+                <p>Locales comerciales y desarrollos inmobiliarios</p>
+            </div>
+            
+            <div class="expertise-item">
+                <h3>Vivienda</h3>
+                <p>Viviendas Unifamiliares y Edificios de departamentos</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURED PROJECT -->
+    <section class="featured-section">
+        <div class="section-header">
+            <h2>Proyecto Destacado</h2>
+        </div>
+        
+        <div class="featured-project">
+            <div class="featured-image">
+                <img src="nosotros.jpg" alt="Clínica de Diálisis Municipal de Caldera">
+            </div>
+            
+            <div class="featured-content">
+                <h3>Clínica de Diálisis Municipal de Caldera</h3>
+                
+                <div class="featured-video">
+                    <iframe 
+                        src="https://www.youtube.com/embed/t5vdjMNMqjw?autoplay=1&mute=1&loop=1&playlist=t5vdjMNMqjw" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                
+                <p>Diseño integral y supervisión de obra para centro de hemodiálisis, cumpliendo normativas MINSAL y estándares internacionales de atención especializada.</p>
+                <p>Proyecto ejecutado desde la conceptualización hasta la entrega final, incluyendo coordinación con equipamiento médico especializado y sistemas de tratamiento de agua.</p>
+                
+                <div class="project-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Rol</span>
+                        <span class="meta-value">Arquitecto Proyectista</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Año</span>
+                        <span class="meta-value">2019-2021</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Ubicación</span>
+                        <span class="meta-value">Caldera, Región de Atacama</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GALLERY CAROUSEL -->
+    <section class="gallery-section">
+        <div class="section-header">
+            <h2>Galería de Proyectos</h2>
+            <p>Carrusel automático - Pasa el cursor para detener</p>
+        </div>
+        
+        <div class="gallery-carousel">
+            <div class="gallery-track">
+                <!-- First set -->
+                <div class="gallery-grid">
+                    <div class="gallery-thumb" onclick="openLightbox('Latina_SPA-1.jpg', 'Centro de SPA Latina')">
+                        <img src="Latina_SPA-1.jpg" alt="Latina SPA">
+                        <div class="gallery-overlay">
+                            <p>Centro de SPA Latina</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-thumb" onclick="openLightbox('casa_el_rosario-2.jpg', 'Casa El Rosario - Fachada')">
+                        <img src="casa_el_rosario-2.jpg" alt="Casa El Rosario">
+                        <div class="gallery-overlay">
+                            <p>Casa El Rosario</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-thumb" onclick="openLightbox('casa_el_rosario-1.jpg', 'Casa El Rosario - Vista Aérea')">
+                        <img src="casa_el_rosario-1.jpg" alt="Casa El Rosario Vista Aérea">
+                        <div class="gallery-overlay">
+                            <p>Casa El Rosario - Vista Aérea</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-thumb" onclick="openLightbox('remodelacion_oficina-2.jpg', 'Consultorio Dental')">
+                        <img src="remodelacion_oficina-2.jpg" alt="Consultorio">
+                        <div class="gallery-overlay">
+                            <p>Consultorio Dental</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-thumb" onclick="openLightbox('remodelacion_oficina-1.jpg', 'Interior Oficina Médica')">
+                        <img src="remodelacion_oficina-1.jpg" alt="Interior Oficina">
+                        <div class="gallery-overlay">
+                            <p>Interior Oficina Médica</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-thumb" onclick="openLightbox('prcCaldera.png', 'Plan Regulador Caldera')">
+                        <img src="prcCaldera.png" alt="Plan Regulador Caldera">
+                        <div class="gallery-overlay">
+                            <p>Plan Regulador Caldera</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-thumb" onclick="openLightbox('verde_musgo.jpg', 'Biblioteca Caldera')">
+                        <img src="verde_musgo.jpg" alt="Biblioteca Caldera">
+                        <div class="gallery-overlay">
+                            <p>Biblioteca Caldera</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Duplicate for infinite scroll -->
+                <div class="gallery-grid">
+                    <div class="gallery-thumb" onclick="openLightbox('Latina_SPA-1.jpg', 'Centro de SPA Latina')">
+                        <img src="Latina_SPA-1.jpg" alt="Latina SPA">
+                        <div class="gallery-overlay">
+                            <p>Centro de SPA Latina</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-thumb" onclick="openLightbox('casa_el_rosario-2.jpg', 'Casa El Rosario - Fachada')">
+                        <img src="casa_el_rosario-2.jpg" alt="Casa El Rosario">
+                        <div class="gallery-overlay">
+                            <p>Casa El Rosario</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-thumb" onclick="openLightbox('casa_el_rosario-1.jpg', 'Casa El Rosario - Vista Aérea')">
+                        <img src="casa_el_rosario-1.jpg" alt="Casa El Rosario Vista Aérea">
+                        <div class="gallery-overlay">
+                            <p>Casa El Rosario - Vista Aérea</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-thumb" onclick="openLightbox('remodelacion_oficina-2.jpg', 'Consultorio Dental')">
+                        <img src="remodelacion_oficina-2.jpg" alt="Consultorio">
+                        <div class="gallery-overlay">
+                            <p>Consultorio Dental</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-thumb" onclick="openLightbox('remodelacion_oficina-1.jpg', 'Interior Oficina Médica')">
+                        <img src="remodelacion_oficina-1.jpg" alt="Interior Oficina">
+                        <div class="gallery-overlay">
+                            <p>Interior Oficina Médica</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-thumb" onclick="openLightbox('prcCaldera.png', 'Plan Regulador Caldera')">
+                        <img src="prcCaldera.png" alt="Plan Regulador Caldera">
+                        <div class="gallery-overlay">
+                            <p>Plan Regulador Caldera</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-thumb" onclick="openLightbox('verde_musgo.jpg', 'Biblioteca Caldera')">
+                        <img src="verde_musgo.jpg" alt="Biblioteca Caldera">
+                        <div class="gallery-overlay">
+                            <p>Biblioteca Caldera</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LIGHTBOX MODAL -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <div class="lightbox-content" onclick="event.stopPropagation()">
+            <button class="lightbox-close" onclick="closeLightbox()">×</button>
+            <img id="lightbox-img" src="" alt="" style="display: none;">
+            <div id="lightbox-video" style="display: none; aspect-ratio: 16/9; width: 100%;"></div>
+        </div>
+    </div>
+
+    <!-- CONTACT SECTION WITH FORM -->
+    <section class="contact-section">
+        <div class="contact-content">
+            <h2>Conversemos sobre tu Proyecto</h2>
+            
+            <form class="contact-form" onsubmit="handleSubmit(event)">
+                <div class="form-group">
+                    <label for="email">Tu Correo Electrónico</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        placeholder="ejemplo@correo.com" 
+                        required
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="message">Cuéntanos sobre tu Proyecto</label>
+                    <textarea 
+                        id="message" 
+                        name="message" 
+                        placeholder="Describe tu proyecto, necesidades o consulta..." 
+                        required
+                    ></textarea>
+                </div>
+                
+                <button type="submit" class="submit-btn">Enviar Consulta</button>
+            </form>
+            
+            <a href="/cdn-cgi/l/email-protection#8eeffcfffbe7faebedfae1ceedeffee7faebe2a0ede2" class="contact-email-link">
+                O escríbenos directamente a: <span class="__cf_email__" data-cfemail="8decfffcf8e4f9e8eef9e2cdeeecfde4f9e8e1a3eee1">[email&#160;protected]</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logos">
+                <img src="logo.png" alt="CAPITEL" class="footer-logo">
+                <img src="logo2.png" alt="CAPITEL" class="footer-logo">
+            </div>
+            
+            <div class="footer-text">
+                © 2025 CAPITEL SPA. La Serena, Región de Coquimbo, Chile.
+            </div>
+        </div>
+    </footer>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        // Smooth scroll para indicador
+        document.querySelector('.scroll-indicator').addEventListener('click', () => {
+            document.querySelector('.videos-section').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        });
+        
+        // Expertise carousel navigation
+        function scrollExpertise(direction) {
+            const carousel = document.getElementById('expertiseCarousel');
+            const scrollAmount = 350;
+            
+            if (direction === 'left') {
+                carousel.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            } else {
+                carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            }
+        }
+        
+        // Lightbox functions
+        function openLightbox(imageSrc, alt) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            lightboxImg.src = imageSrc;
+            lightboxImg.alt = alt;
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Close lightbox on ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeLightbox();
+            }
+        });
+        
+        // Form submission handler
+        function handleSubmit(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+            
+            // Crear mailto link
+            const subject = 'Consulta desde Capitel.cl';
+            const body = `${message}%0D%0A%0D%0AResponder a: ${email}`;
+            window.location.href = `mailto:arquitecto@capitel.cl?subject=${subject}&body=${body}`;
+            
+            // Reset form
+            event.target.reset();
+            alert('¡Gracias! Tu consulta será enviada por correo.');
+        }
+        
+        // Intersection Observer para animaciones
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        // Video Lightbox function
+        function openVideoLightbox(videoId) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const lightboxVideo = document.getElementById('lightbox-video');
+            
+            lightboxImg.style.display = 'none';
+            lightboxVideo.style.display = 'block';
+            lightboxVideo.innerHTML = `
+                <iframe 
+                    width="100%" 
+                    height="100%" 
+                    src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen
+                    style="border: none;">
+                </iframe>
+            `;
+            
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // Update image lightbox
+        const originalOpenLightbox = openLightbox;
+        openLightbox = function(imageSrc, alt) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const lightboxVideo = document.getElementById('lightbox-video');
+            
+            lightboxVideo.style.display = 'none';
+            lightboxVideo.innerHTML = '';
+            lightboxImg.style.display = 'block';
+            lightboxImg.src = imageSrc;
+            lightboxImg.alt = alt;
+            
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
+        
+        // Update close lightbox to stop videos
+        const originalCloseLightbox = closeLightbox;
+        closeLightbox = function() {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxVideo = document.getElementById('lightbox-video');
+            
+            lightbox.classList.remove('active');
+            lightboxVideo.innerHTML = ''; // Stop video
+            document.body.style.overflow = 'auto';
+        };
+        
+        document.querySelectorAll('.video-card, .expertise-item, .gallery-thumb, .featured-project, .section-header').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
